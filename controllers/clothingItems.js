@@ -1,4 +1,5 @@
 const clothingItem = require("../models/clothingItem");
+
 const { BAD_REQUEST, NOT_FOUND, SERVER_ERROR } = require("../utils/errors");
 
 const createItem = (req, res) => {
@@ -8,7 +9,7 @@ const createItem = (req, res) => {
       name,
       weather,
       imageUrl,
-      owner: req.user_id,
+      owner: req.user._id,
     })
     .then((item) => {
       res.send({ data: item });
