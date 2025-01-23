@@ -23,3 +23,9 @@ app.listen(PORT, () => {
 app.use((req, res) => {
   res.status(404).send({ message: "Requested resource not found" });
 });
+app.use((req, res, next) => {
+  req.user = {
+    _id: "67927d57cd6d2f5d3a25b6f8",
+  };
+  next();
+});
