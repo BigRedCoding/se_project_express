@@ -60,7 +60,6 @@ userSchema.statics.findUserByCredentials = function checkEmailPassword(
   return this.findOne({ email })
     .select("+password")
     .then((user) => {
-      // Arrow function here
       if (!user) {
         return Promise.reject(new Error("Invalid credentials"));
       }
