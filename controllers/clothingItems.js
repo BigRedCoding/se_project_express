@@ -34,7 +34,7 @@ const createItem = (req, res) => {
 
 const getItems = (req, res) => {
   clothingItem
-    .find({})
+    .find({ owner: req.user._id })
     .then((items) => {
       res.send(items);
     })
@@ -48,8 +48,9 @@ const getItems = (req, res) => {
 
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
+
   clothingItem
-    .findByIdAndDelete(itemId)
+    .findById(itemId)
     .orFail()
     .then((item) => {
       if (item.owner.toString() !== req.user._id.toString()) {
@@ -59,9 +60,9 @@ const deleteItem = (req, res) => {
       }
       return item
         .remove()
-        .then(() =>
-          res.status(200).send({ message: "Item deleted successfully" })
-        )
+        .then(() => {
+          res.status(200).send({ message: "Item deleted successfully" });
+        })
         .catch((err) => {
           console.error(err);
           return res

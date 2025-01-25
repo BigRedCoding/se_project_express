@@ -114,12 +114,12 @@ const login = (req, res) => {
   }
 
   return User.findUserByCredentials(email, password)
-    .then(console.log(res))
     .then((user) => {
+      bcrypt.compare(password, user.password);
+
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
       });
-      console.log(token);
 
       return res.status(200).send({ message: "Login successful", token });
     })
