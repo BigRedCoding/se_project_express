@@ -2,6 +2,8 @@ const express = require("express");
 
 const mongoose = require("mongoose");
 
+const cors = require("cors");
+
 const mainRouter = require("./routes/index");
 
 const { PORT = 3001 } = process.env;
@@ -16,12 +18,6 @@ mongoose
   .catch(console.error);
 
 app.use(express.json());
-app.use((req, res, next) => {
-  req.user = {
-    _id: "67927d57cd6d2f5d3a25b6f8",
-  };
-  next();
-});
 
 app.use("/", mainRouter);
 
@@ -32,3 +28,5 @@ app.listen(PORT, () => {
 app.use((req, res) => {
   res.status(NOT_FOUND).send({ message: "Requested resource not found" });
 });
+
+app.use(cors());
