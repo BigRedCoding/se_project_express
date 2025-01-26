@@ -59,7 +59,7 @@ const deleteItem = (req, res) => {
           .send({ message: "You are not authorized to delete this item" });
       }
       return item
-        .remove()
+        .deleteOne()
         .then(() => {
           res.status(200).send({ message: "Item deleted successfully" });
         })
