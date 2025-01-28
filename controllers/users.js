@@ -14,17 +14,6 @@ const {
   SERVER_ERROR,
 } = require("../utils/errors");
 
-const getUsers = (req, res) => {
-  User.find({})
-    .then((users) => res.send(users))
-    .catch((error) => {
-      console.error(error);
-      return res
-        .status(SERVER_ERROR)
-        .send({ message: "An error has occurred on the server" });
-    });
-};
-
 const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
 
@@ -34,50 +23,58 @@ const createUser = (req, res) => {
       .send({ message: "Email and password are required" });
   }
 
-  User.findOne({ email })
+  return User.findOne({ email })
     .then((existingUser) => {
       if (existingUser) {
         return res
           .status(CONFLICT_ERROR)
           .send({ message: "Email is already taken" });
       }
-      bcrypt.hash(password, 8, (hashError, hashedPassword) => {
-        if (hashError) {
-          console.error(hashError);
+
+      return new Promise((resolve, reject) => {
+        bcrypt.hash(password, 8, (err, hashedPassword) => {
+          if (err) {
+            reject(new Error("Error hashing the password"));
+          } else {
+            resolve(hashedPassword);
+          }
+        });
+      })
+        .then((hashedPassword) =>
+          User.create({ name, avatar, email, password: hashedPassword })
+        )
+        .then((user) => {
+          const { password: _, ...userWithoutPassword } = user.toObject();
+          return res.status(201).send(userWithoutPassword);
+        })
+        .catch((createUserError) => {
+          console.error(createUserError);
+
+          if (createUserError.name === "ValidationError") {
+            return res
+              .status(BAD_REQUEST)
+              .send({ message: "Invalid data provided" });
+          }
+
+          if (createUserError.name === "CastError") {
+            return res.status(BAD_REQUEST).send({ message: "Invalid ID" });
+          }
+
           return res
             .status(SERVER_ERROR)
-            .send({ message: "Error hashing the password" });
-        }
-        return User.create({ name, avatar, email, password: hashedPassword })
-          .then((user) => {
-            const { password: _, ...userWithoutPassword } = user.toObject();
-            return res.status(201).send(userWithoutPassword);
-          })
-          .catch((createUserError) => {
-            console.error(createUserError);
-
-            if (createUserError.name === "ValidationError") {
-              return res
-                .status(BAD_REQUEST)
-                .send({ message: "Invalid data provided" });
-            }
-
-            if (createUserError.name === "CastError") {
-              return res.status(BAD_REQUEST).send({ message: "Invalid ID" });
-            }
-
-            return res
-              .status(SERVER_ERROR)
-              .send({ message: "An error has occurred on the server" });
-          });
-      });
-      return null;
+            .send({ message: "An error has occurred on the server" });
+        });
+    })
+    .catch((hashError) => {
+      console.error(hashError);
+      return res
+        .status(SERVER_ERROR)
+        .send({ message: "Error hashing the password" });
     })
     .catch((error) => {
       console.error(error);
       return res.status(SERVER_ERROR).send({ message: "Server error" });
     });
-  return null;
 };
 
 const getCurrentUser = (req, res) => {
@@ -116,19 +113,33 @@ const login = (req, res) => {
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      bcrypt.compare(password, user.password);
+      bcrypt.compare(password, user.password, (err, isMatch) => {
+        if (err || !isMatch) {
+          return res
+            .status(UNAUTHORIZED)
+            .send({ message: "Invalid email or password" });
+        }
 
-      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
-        expiresIn: "7d",
+        const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
+          expiresIn: "7d",
+        });
+
+        return res.status(200).send({ message: "Login successful", token });
       });
-
-      return res.status(200).send({ message: "Login successful", token });
     })
     .catch((error) => {
       console.error(error);
+      if (
+        error.name === "DocumentNotFoundError" ||
+        error.message === "Invalid credentials"
+      ) {
+        return res
+          .status(UNAUTHORIZED)
+          .send({ message: "Invalid email or password" });
+      }
       return res
-        .status(UNAUTHORIZED)
-        .send({ message: "Invalid email or password" });
+        .status(SERVER_ERROR)
+        .send({ message: "An error occurred while processing your request" });
     });
 };
 
@@ -169,7 +180,6 @@ const updateUserProfile = (req, res) => {
 };
 
 module.exports = {
-  getUsers,
   createUser,
   getCurrentUser,
   login,

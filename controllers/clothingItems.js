@@ -1,4 +1,4 @@
-const clothingItem = require("../models/clothingItem");
+const ClothingItem = require("../models/clothingItem");
 
 const {
   BAD_REQUEST,
@@ -9,13 +9,12 @@ const {
 
 const createItem = (req, res) => {
   const { name, weather, imageUrl } = req.body;
-  clothingItem
-    .create({
-      name,
-      weather,
-      imageUrl,
-      owner: req.user._id,
-    })
+  ClothingItem.create({
+    name,
+    weather,
+    imageUrl,
+    owner: req.user._id,
+  })
     .then((item) => {
       res.send({ data: item });
     })
@@ -33,8 +32,7 @@ const createItem = (req, res) => {
 };
 
 const getItems = (req, res) => {
-  clothingItem
-    .find({ owner: req.user._id })
+  ClothingItem.find()
     .then((items) => {
       res.send(items);
     })
@@ -49,8 +47,7 @@ const getItems = (req, res) => {
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
 
-  clothingItem
-    .findById(itemId)
+  ClothingItem.findById(itemId)
     .orFail()
     .then((item) => {
       if (item.owner.toString() !== req.user._id.toString()) {
@@ -85,12 +82,11 @@ const deleteItem = (req, res) => {
 };
 
 const likeItem = (req, res) => {
-  clothingItem
-    .findByIdAndUpdate(
-      req.params.itemId,
-      { $addToSet: { likes: req.user._id } },
-      { new: true }
-    )
+  ClothingItem.findByIdAndUpdate(
+    req.params.itemId,
+    { $addToSet: { likes: req.user._id } },
+    { new: true }
+  )
     .orFail(new Error("ItemNotFound"))
     .then((item) => {
       res.setHeader("Content-Type", "application/json");
@@ -111,12 +107,11 @@ const likeItem = (req, res) => {
 };
 
 const dislikeItem = (req, res) => {
-  clothingItem
-    .findByIdAndUpdate(
-      req.params.itemId,
-      { $pull: { likes: req.user._id } },
-      { new: true }
-    )
+  ClothingItem.findByIdAndUpdate(
+    req.params.itemId,
+    { $pull: { likes: req.user._id } },
+    { new: true }
+  )
     .orFail(new Error("ItemNotFound"))
     .then((item) => {
       res.setHeader("Content-Type", "application/json");

@@ -35,13 +35,6 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: [true, "The password field is required"],
-    minlength: 6,
-    validate: {
-      validator(value) {
-        return /[!@#$%^&*(),.?":{}|<>]/.test(value);
-      },
-      message: "Password must contain at least one symbol",
-    },
     select: false,
   },
 });
