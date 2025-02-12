@@ -2,13 +2,13 @@ const jwt = require("jsonwebtoken");
 
 const { JWT_SECRET } = require("../utils/config");
 
-const { UNAUTHORIZED } = require("../utils/errors");
+const { UnauthorizedError } = require("../utils/errors");
 
 const auth = (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization) {
-    return res.status(UNAUTHORIZED).send({ message: "Authorization required" });
+    return next(new UnauthorizedError("Invalid email or password"));
   }
 
   const token = authorization.replace("Bearer ", "");
@@ -19,9 +19,7 @@ const auth = (req, res, next) => {
     req.user = payload;
     return next();
   } catch (err) {
-    return res
-      .status(UNAUTHORIZED)
-      .send({ message: "Invalid or expired token" });
+    return next(new UnauthorizedError("Invalid email or password"));
   }
 };
 

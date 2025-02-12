@@ -8,7 +8,7 @@ const mainRouter = require("./routes/index");
 
 const { PORT = 3001 } = process.env;
 const app = express();
-const { NOT_FOUND } = require("./utils/errors");
+const { NotFoundError } = require("./utils/errors");
 
 const errorHandler = require("./middlewares/error-handler");
 
@@ -37,7 +37,7 @@ app.listen(PORT, () => {
 });
 
 app.use((req, res) => {
-  res.status(NOT_FOUND).send({ message: "Requested resource not found" });
+  return next(new NotFoundError("User not found"));
 });
 
 app.use(errorLogger);
