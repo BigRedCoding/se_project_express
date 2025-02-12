@@ -149,6 +149,7 @@ const updateUserProfile = (req, res, next) => {
     .orFail()
     .then((user) => {
       if (!user) {
+        d;
         return next(new NotFoundError("User not found"));
       }
       res.status(200).send(user);

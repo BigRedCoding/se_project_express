@@ -7,7 +7,7 @@ const { UnauthorizedError } = require("../utils/errors");
 const auth = (req, res, next) => {
   const { authorization } = req.headers;
 
-  if (!authorization) {
+  if (!authorization || err === "DocumentNotFoundError") {
     return next(new UnauthorizedError("Invalid email or password"));
   }
 
