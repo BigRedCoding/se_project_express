@@ -17,7 +17,6 @@ const { errors } = require("celebrate");
 const { requestLogger, errorLogger } = require("./middlewares/logger");
 
 app.use(requestLogger);
-// app.use(routes);
 
 app.use(cors());
 
@@ -36,7 +35,7 @@ app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
 
-app.use((req, res) => {
+app.use((req, res, next) => {
   return next(new NotFoundError("User not found"));
 });
 
