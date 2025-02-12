@@ -5,11 +5,11 @@ const { JWT_SECRET } = require("../utils/config");
 const { UnauthorizedError } = require("../utils/errors");
 
 const auth = (req, res, next) => {
-  const { authorization } = req.headers;
+  const { authorization } = req.headers || "";
 
   console.log("test");
 
-  if (!authorization) {
+  if (authorization === "" || undefined) {
     return res
       .status(401)
       .json({ message: "Authorization header is required" });
