@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const validator = require("validator");
 
-const clothingItem = new mongoose.Schema({
+const ClothingItem = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -14,7 +14,7 @@ const clothingItem = new mongoose.Schema({
     enum: ["hot", "warm", "cold"],
     required: true,
   },
-  imageUrl: {
+  link: {
     type: String,
     required: true,
     validate: {
@@ -32,11 +32,6 @@ const clothingItem = new mongoose.Schema({
     default: [],
     required: true,
   },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-    required: true,
-  },
 });
 
-module.exports = mongoose.model("clothingItem", clothingItem);
+module.exports = mongoose.model("clothingItem", ClothingItem);

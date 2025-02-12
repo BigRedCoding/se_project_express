@@ -10,6 +10,15 @@ const { PORT = 3001 } = process.env;
 const app = express();
 const { NOT_FOUND } = require("./utils/errors");
 
+const errorHandler = require("./middlewares/error-handler");
+
+const { errors } = require("celebrate");
+
+const { requestLogger, errorLogger } = require("./middlewares/logger");
+
+app.use(requestLogger);
+// app.use(routes);
+
 app.use(cors());
 
 mongoose
@@ -30,3 +39,8 @@ app.listen(PORT, () => {
 app.use((req, res) => {
   res.status(NOT_FOUND).send({ message: "Requested resource not found" });
 });
+
+app.use(errorLogger);
+
+app.use(errors());
+app.use(errorHandler);
