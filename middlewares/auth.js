@@ -8,6 +8,7 @@ const auth = (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization) {
+    console.log(res);
     return res
       .status(401)
       .json({ message: "Authorization header is required" });
