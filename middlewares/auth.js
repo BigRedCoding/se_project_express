@@ -7,8 +7,9 @@ const { UnauthorizedError } = require("../utils/errors");
 const auth = (req, res, next) => {
   const { authorization } = req.headers;
 
+  console.log("test");
+
   if (!authorization) {
-    console.log("test");
     return res
       .status(401)
       .json({ message: "Authorization header is required" });
