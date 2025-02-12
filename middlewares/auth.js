@@ -7,12 +7,8 @@ const { UnauthorizedError } = require("../utils/errors");
 const auth = (req, res, next) => {
   const { authorization } = req.headers;
 
-  if (
-    !authorization ||
-    err.name === "DocumentNotFoundError" ||
-    err.name === "ValidationError"
-  ) {
-    return next(new UnauthorizedError("Invalid email or password"));
+  if (!authorization) {
+    return next(new UnauthorizedError("Authorization header is required"));
   }
 
   const token = authorization.replace("Bearer ", "");
