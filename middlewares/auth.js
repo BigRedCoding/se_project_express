@@ -20,7 +20,11 @@ const auth = (req, res, next) => {
   const token = authorization.replace("Bearer ", "");
 
   try {
-    const payload = jwt.verify(token, JWT_SECRET);
+    if (!token || !JWT_SECRET) {
+      return next(new UnauthorizedError("Token or JWT Secret is missing"));
+    }
+
+    const payload = jwt.verify(token || "", JWT_SECRET || "");
 
     req.user = payload;
 
