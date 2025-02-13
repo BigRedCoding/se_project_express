@@ -16,17 +16,28 @@ const auth = (req, res, next) => {
   const token = authorization.replace("Bearer ", "");
 
   try {
-    if (!token || !JWT_SECRET) {
-      return next(new UnauthorizedError("Token or JWT Secret is missing"));
+    if (!token) {
+      return next(new UnauthorizedError("Token is missing"));
     }
 
-    const payload = jwt.verify(token || "", JWT_SECRET || "");
+    if (!JWT_SECRET) {
+      return next(new UnauthorizedError("JWT Secret is missing"));
+    }
+
+    const payload = jwt.verify(token, JWT_SECRET);
 
     req.user = payload;
 
     return next();
   } catch (err) {
-    return next(new UnauthorizedError("Invalid email or password"));
+    if (err instanceof jwt.JsonWebTokenError) {
+      return next(new UnauthorizedError("Invalid or malformed token"));
+    }
+    if (err instanceof jwt.TokenExpiredError) {
+      return next(new UnauthorizedError("Token has expired"));
+    }
+
+    return next(new UnauthorizedError("Failed to authenticate token"));
   }
 };
 
