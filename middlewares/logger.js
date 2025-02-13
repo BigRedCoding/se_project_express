@@ -9,7 +9,6 @@ const messageFormat = winston.format.combine(
   )
 );
 
-// create a request logger
 const requestLogger = expressWinston.logger({
   transports: [
     new winston.transports.Console({
