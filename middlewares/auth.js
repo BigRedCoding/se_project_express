@@ -21,7 +21,8 @@ const auth = (req, res, next) => {
     }
 
     if (!JWT_SECRET) {
-      return next(new ServerError("JWT Secret is missing"));
+      return next(new UnauthorizedError("Token is missing"));
+      // return next(new ServerError("JWT Secret is missing"));
     }
 
     const payload = jwt.verify(token, JWT_SECRET);
