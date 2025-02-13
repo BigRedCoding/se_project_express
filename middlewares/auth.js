@@ -4,8 +4,6 @@ const { JWT_SECRET } = require("../utils/config");
 
 const { UnauthorizedError } = require("../utils/errors");
 
-const mockUser = { id: 1, name: "John Doe" };
-
 const auth = (req, res, next) => {
   const { authorization } = req.headers || "";
 
@@ -24,9 +22,7 @@ const auth = (req, res, next) => {
   try {
     const payload = jwt.verify(token, JWT_SECRET);
 
-    // req.user = payload;
-
-    req.user = mockUser;
+    req.user = payload;
 
     return next();
   } catch (err) {
