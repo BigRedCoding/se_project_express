@@ -10,11 +10,7 @@ const auth = (req, res, next) => {
   console.log("Auth", req.headers);
 
   if (!authorization) {
-    return res
-      .status(401)
-      .json({ message: "Authorization header is required" });
-
-    // return next(new UnauthorizedError("Authorization header is required"));
+    return next(new UnauthorizedError("Authorization header is required"));
   }
 
   const token = authorization.replace("Bearer ", "");
