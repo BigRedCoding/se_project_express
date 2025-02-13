@@ -39,7 +39,13 @@ const auth = (req, res, next) => {
       return next(new UnauthorizedError("Token has expired"));
     }
 
-    return next(new UnauthorizedError("Failed to authenticate token"));
+    if (err.name === "ServerError") {
+      return next(
+        new ServerError("An unexpected error occurred on the server")
+      );
+    }
+
+    return next(new ServerError("An unknown error occurred"));
   }
 };
 
