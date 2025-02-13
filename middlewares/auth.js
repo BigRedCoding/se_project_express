@@ -17,13 +17,11 @@ const auth = (req, res, next) => {
 
   try {
     if (!token) {
-      return res.status(401).json({ error: "Token is missing" });
-      // return next(new UnauthorizedError("Token is missing"));
+      return next(new UnauthorizedError("Token is missing"));
     }
 
     if (!JWT_SECRET) {
-      return res.status(500).json({ error: "JWT SECRET IS MISSING" });
-      // return next(new ServerError("JWT Secret is missing"));
+      return next(new ServerError("JWT Secret is missing"));
     }
 
     const payload = jwt.verify(token, JWT_SECRET);
