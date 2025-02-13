@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 
 const { JWT_SECRET } = require("../utils/config");
 
-const { UnauthorizedError } = require("../utils/errors");
+const { UnauthorizedError, ServerError } = require("../utils/errors");
 
 const auth = (req, res, next) => {
   const { authorization } = req.headers || "";
@@ -17,11 +17,15 @@ const auth = (req, res, next) => {
 
   try {
     if (!token) {
+      return res.status(401).json({ error: "Token is missing" });
+    }
+
+    if (!token) {
       return next(new UnauthorizedError("Token is missing"));
     }
 
     if (!JWT_SECRET) {
-      return next(new UnauthorizedError("JWT Secret is missing"));
+      return next(new ServerError("JWT Secret is missing"));
     }
 
     const payload = jwt.verify(token, JWT_SECRET);
