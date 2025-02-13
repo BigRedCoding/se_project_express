@@ -19,7 +19,6 @@ const auth = (req, res, next) => {
     }
 
     if (!JWT_SECRET) {
-      // return next(new UnauthorizedError("JWT Secret is missing"));
       return next(new ServerError("JWT Secret is missing"));
     }
 
