@@ -30,10 +30,10 @@ const auth = (req, res, next) => {
 
     return next();
   } catch (err) {
-    if (err instanceof jwt.JsonWebTokenError) {
+    if (err.name === "JsonWebTokenError") {
       return next(new UnauthorizedError("Invalid or malformed token"));
     }
-    if (err instanceof jwt.TokenExpiredError) {
+    if (err.name === "TokenExpiredError") {
       return next(new UnauthorizedError("Token has expired"));
     }
 
