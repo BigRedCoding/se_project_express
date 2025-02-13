@@ -7,7 +7,9 @@ const { UnauthorizedError, ServerError } = require("../utils/errors");
 const auth = (req, res, next) => {
   const { authorization } = req.headers || "";
 
-  console.log("Auth", req.headers);
+  console.log("Auth headers", req.headers);
+
+  console.log("[Error] Status Code:", err.statusCode, "Message:", err.message);
 
   if (!authorization) {
     return next(new UnauthorizedError("Authorization header is required"));
@@ -43,13 +45,6 @@ const auth = (req, res, next) => {
         new ServerError("An unexpected error occurred on the server")
       );
     }
-
-    console.log(
-      "[Error] Status Code:",
-      err.statusCode,
-      "Message:",
-      err.message
-    );
 
     return next(new ServerError("An unknown error occurred"));
   }
