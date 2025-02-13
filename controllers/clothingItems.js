@@ -12,6 +12,8 @@ const {
 const createItem = (req, res, next) => {
   const { name, weather, link, owner, likes } = req.body;
 
+  console.log("CreateItem:", req.body);
+
   ClothingItem.create({
     name,
     weather,
