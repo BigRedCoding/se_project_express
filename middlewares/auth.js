@@ -15,22 +15,42 @@ const auth = (req, res, next) => {
 
   const token = authorization.replace("Bearer ", "");
 
+  if (!JWT_SECRET) {
+    return res.status(500).json({ error: "JWT SECRET IS MISSING" });
+  }
+
   try {
     if (!token) {
       return res.status(401).json({ error: "Token is missing" });
       // return next(new UnauthorizedError("Token is missing"));
     }
 
-    if (!JWT_SECRET) {
-      return res.status(500).json({ error: "JWT SECRET IS MISSING" });
-      // return next(new ServerError("JWT Secret is missing"));
-    }
+    jwt.verify(token, JWT_SECRET, (err, decoded) => {
+      if (err) {
+        if (err.name === "JsonWebTokenError") {
+          return res.status(401).json({ error: "Invalid token" });
+        } else if (err.name === "TokenExpiredError") {
+          return res.status(401).json({ error: "Token has expired" });
+        } else if (err.name === "NotBeforeError") {
+          return res.status(401).json({ error: "Token is not active yet" });
+        } else {
+          return res
+            .status(500)
+            .json({ error: "An error occurred while verifying the token" });
+        }
+      }
+      if (
+        !decoded.permissions ||
+        !decoded.permissions.includes("requiredPermission")
+      ) {
+        return res.status(403).json({
+          error: "You do not have permission to access this resource",
+        });
+      }
 
-    const payload = jwt.verify(token, JWT_SECRET);
-
-    req.user = payload;
-
-    return next();
+      req.user = decoded;
+      return next();
+    });
   } catch (err) {
     if (err.name === "JsonWebTokenError") {
       return next(new UnauthorizedError("Invalid or malformed token"));
