@@ -22,7 +22,7 @@ const auth = (req, res, next) => {
     }
 
     if (!JWT_SECRET) {
-      return res.status(401).json({ error: "JWT SECRET IS MISSING" });
+      return res.status(500).json({ error: "JWT SECRET IS MISSING" });
       // return next(new ServerError("JWT Secret is missing"));
     }
 
