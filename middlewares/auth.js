@@ -44,6 +44,13 @@ const auth = (req, res, next) => {
       );
     }
 
+    console.log(
+      "[Error] Status Code:",
+      err.statusCode,
+      "Message:",
+      err.message
+    );
+
     return next(new ServerError("An unknown error occurred"));
   }
 };
