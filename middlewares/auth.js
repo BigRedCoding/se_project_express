@@ -20,10 +20,10 @@ const auth = (req, res, next) => {
   }
 
   try {
-    if (!token) {
-      return res.status(401).json({ error: "Token is missing" });
-      // return next(new UnauthorizedError("Token is missing"));
-    }
+    // if (!token) {
+    //   return res.status(401).json({ error: "Token is missing" });
+    //   // return next(new UnauthorizedError("Token is missing"));
+    // }
 
     jwt.verify(token, JWT_SECRET, (err, decoded) => {
       if (err) {
