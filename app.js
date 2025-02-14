@@ -20,12 +20,14 @@ const { requestLogger, errorLogger } = require("./middlewares/logger");
 
 app.use(requestLogger);
 
-app.use(
-  cors({
-    origin: "https://www.bdwtwr.justlearning.net", // Allow only this origin
-    methods: ["GET", "PUT", "POST", "PATCH", "DELETE"], // Specify which methods are allowed
-  })
-);
+app.use(cors());
+
+// app.use(
+//   cors({
+//     origin: "https://www.bdwtwr.justlearning.net", // Allow only this origin
+//     methods: ["GET", "PUT", "POST", "PATCH", "DELETE"], // Specify which methods are allowed
+//   })
+// );
 
 mongoose
   .connect("mongodb://127.0.0.1:27017/wtwr_db")
