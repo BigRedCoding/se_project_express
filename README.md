@@ -4,19 +4,23 @@
 
 ### **`DESCRIPTION:`**
 
-### This project is the backend server for the WTWR application previously designed and posted [here](https://bigredcoding.github.io/se_project_react/). At it's current stage, it has the baseline logic to handle requests and store data at a targeted server. Future modifications will combine the projects to produce a fully functional front-and-back-end application.
+### This project is the backend server for the WTWR application designed by Brandon Dooley.
 
 ================================================================================================
 
 ### **`TECHNIQUES AND TECHNOLOGIES:`**
 
-### This server was created using mainly Javascript. Other functionality add-ons include Mongoose, ESLint, Nodemon, Express, and Modules. With the assistance of the software Postman and MongoDB, functionalities were able to be verified and the database was able to be created and managed. Currently, if a person wanted to test this themselves, it it configured to run off of localhost:27017 with a wtwr folder.
+### This server was created using mainly Javascript. Other functionality add-ons include Mongoose, ESLint, Express, and Modules. With the assistance of the software Postman and MongoDB, functionalities were able to be verified and the database was able to be created and managed. The server is live and is accessible via the link below.
 
 ================================================================================================
 
 ### **`DEPLOYMENT:`**
 
-### This server can be accessed on GitHub at the following link: [here](https://github.com/BigRedCoding/se_project_express)
+### The website now is connected with a proper url at [https://www.bdwtwr.justlearning.net/](https://www.bdwtwr.justlearning.net/) or [http://www.bdwtwr.justlearning.net/](http://www.bdwtwr.justlearning.net/).
+
+### The frontend repository is [here](https://bigredcoding.github.io/se_project_react/).
+
+### The backend repository is [here](https://github.com/BigRedCoding/se_project_express).
 
 ================================================================================================
 
@@ -25,9 +29,3 @@
 ### For the moment, I will wait on this until the project is complete in order to demonstrate the full functionality in a video
 
 ================================================================================================
-
-### **` Running the Project`**
-
-`npm run start` — to launch the server
-
-`npm run dev` — to launch the server with the hot reload feature

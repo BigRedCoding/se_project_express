@@ -6,8 +6,6 @@ const mongoose = require("mongoose");
 
 const cors = require("cors");
 
-const mainRouter = require("./routes/index");
-
 const { PORT = 3001 } = process.env;
 const app = express();
 const { NotFoundError } = require("./utils/errors");
@@ -20,14 +18,22 @@ const { requestLogger, errorLogger } = require("./middlewares/logger");
 
 app.use(requestLogger);
 
-// app.use(cors());
+app.get("/crash-test", () => {
+  setTimeout(() => {
+    throw new Error("Server will crash now");
+  }, 0);
+});
 
-app.use(
-  cors({
-    origin: "https://www.bdwtwr.justlearning.net", // Allow only this origin
-    methods: ["GET", "PUT", "POST", "PATCH", "DELETE"], // Specify which methods are allowed
-  })
-);
+const mainRouter = require("./routes/index");
+
+app.use(cors());
+
+// app.use(
+//   cors({
+//     origin: "https://www.bdwtwr.justlearning.net",
+//     methods: ["GET", "PUT", "POST", "PATCH", "DELETE"],
+//   })
+// );
 
 mongoose
   .connect("mongodb://127.0.0.1:27017/wtwr_db")
