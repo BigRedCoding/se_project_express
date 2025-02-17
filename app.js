@@ -7,6 +7,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 
 const { PORT = 3001 } = process.env;
+
 const app = express();
 
 const { errors } = require("celebrate");
@@ -21,7 +22,7 @@ const { ServerError } = require("./utils/errors");
 
 app.get("/crash-test", () => {
   setTimeout(() => {
-    throw new Error();
+    throw new ServerError();
   }, 0);
 });
 
@@ -36,7 +37,9 @@ app.use(cors());
 //   })
 // );
 
-mongoose.connect("mongodb://127.0.0.1:27017/wtwr_db").catch(ServerError());
+mongoose.connect("mongodb://127.0.0.1:27017/wtwr_db").catch(() => {
+  throw new ServerError();
+});
 
 app.use(express.json());
 

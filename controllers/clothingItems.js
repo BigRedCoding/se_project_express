@@ -30,10 +30,8 @@ const createItem = (req, res, next) => {
 
 const getItems = (req, res, next) => {
   ClothingItem.find()
-    .then((items) => {
-      res.status(200).send(items);
-    })
-    .catch(next(new ServerError()));
+    .then((items) => res.status(200).send(items))
+    .catch(() => next(new ServerError()));
 };
 
 const deleteItem = (req, res, next) => {
