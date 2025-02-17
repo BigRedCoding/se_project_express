@@ -1,7 +1,7 @@
 const { Joi, celebrate } = require("celebrate");
 const validator = require("validator");
 
-const validateURL = (value, helpers) => {
+const imageURL = (value, helpers) => {
   if (validator.isURL(value)) {
     return value;
   }
@@ -23,18 +23,13 @@ const validateClothingItem = celebrate({
       "string.empty": 'The "name" field must be filled in',
     }),
 
-    link: Joi.string().required().custom(validateURL).messages({
-      "string.empty": 'The "link" field must be filled in',
-      "string.uri": 'The "link" field must be a valid URL',
+    imageUrl: Joi.string().required().custom(imageURL).messages({
+      "string.empty": 'The "image URL" field must be filled in',
+      "string.uri": 'The "image URL" field must be a valid URL',
     }),
-    weather: Joi.string().required().messages({
+    weather: Joi.string().valid("hot", "warm", "cold").required().messages({
       "string.empty": 'The "weather" field must be filled in',
     }),
-    owner: Joi.string().length(24).hex().required().messages({
-      "string.length": "Owner ID must be 24 characters long",
-      "string.hex": "Owner ID must be a valid hexadecimal string",
-    }),
-    likes: Joi.array(),
   }),
 });
 
@@ -45,7 +40,7 @@ const validateUserInfo = celebrate({
       "string.max": 'The "name" must be no longer than 30 characters',
       "string.empty": 'The "name" field must be filled in',
     }),
-    avatar: Joi.string().custom(validateURL).allow("").optional().messages({
+    avatar: Joi.string().custom(imageURL).allow("").optional().messages({
       "string.uri": 'The "avatar" field must be a valid URL',
     }),
 
@@ -78,7 +73,7 @@ const validateUpdateUserInfo = celebrate({
       "string.max": 'The "name" must be no longer than 30 characters',
       "string.empty": 'The "name" field must be filled in',
     }),
-    avatar: Joi.string().optional().custom(validateURL).messages({
+    avatar: Joi.string().optional().custom(imageURL).messages({
       "string.empty": 'The "avatar" field must be filled in',
       "string.uri": 'The "avatar" field must be a valid URL',
     }),

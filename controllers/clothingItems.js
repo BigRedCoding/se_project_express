@@ -2,34 +2,29 @@ const ClothingItem = require("../models/clothingItem");
 
 const {
   BadRequestError,
-  UnauthorizedError,
   ForbiddenError,
   NotFoundError,
-  ConflictError,
   ServerError,
 } = require("../utils/errors");
 
 const createItem = (req, res, next) => {
-  const { name, weather, link, owner, likes } = req.body;
-
-  console.log("CreateItem:", req.body);
+  const { name, weather, imageUrl } = req.body;
 
   ClothingItem.create({
     name,
     weather,
-    link,
-    owner,
-    likes,
+    imageUrl,
+    owner: req.user._id,
+    likes: [],
   })
     .then((item) => {
       res.status(201).send({ data: item });
     })
     .catch((err) => {
-      console.error(err);
       if (err.name === "ValidationError") {
-        return next(new BadRequestError("Invalid data provided"));
+        return next(new BadRequestError());
       }
-      return next(new ServerError("An error has occurred on the server"));
+      return next(new ServerError());
     });
 };
 
@@ -38,10 +33,7 @@ const getItems = (req, res, next) => {
     .then((items) => {
       res.status(200).send(items);
     })
-    .catch((err) => {
-      console.error(err);
-      return next(new ServerError("An error has occurred on the server"));
-    });
+    .catch(next(new ServerError()));
 };
 
 const deleteItem = (req, res, next) => {
@@ -60,7 +52,6 @@ const deleteItem = (req, res, next) => {
       });
     })
     .catch((err) => {
-      console.error(err);
       if (err.name === "DocumentNotFoundError") {
         return next(new NotFoundError("Item not found"));
       }
@@ -82,9 +73,8 @@ const likeItem = (req, res, next) => {
       res.status(200).send({ data: item });
     })
     .catch((err) => {
-      console.error(err);
-      if (err.message === "ItemNotFound") {
-        return next(new NotFoundError("Item not found"));
+      if (err.message === "DocumentNotFoundError") {
+        return next(new NotFoundError());
       }
       if (err.name === "CastError") {
         return next(new BadRequestError("Invalid item ID"));
@@ -104,9 +94,8 @@ const dislikeItem = (req, res, next) => {
       res.status(200).send(item);
     })
     .catch((err) => {
-      console.error(err);
-      if (err.message === "ItemNotFound") {
-        return next(new NotFoundError("Item not found"));
+      if (err.message === "DocumentNotFoundError") {
+        return next(new NotFoundError());
       }
       if (err.name === "CastError") {
         return next(new BadRequestError("Invalid item ID"));

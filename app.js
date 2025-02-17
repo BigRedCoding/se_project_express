@@ -8,19 +8,20 @@ const cors = require("cors");
 
 const { PORT = 3001 } = process.env;
 const app = express();
-const { NotFoundError } = require("./utils/errors");
-
-const errorHandler = require("./middlewares/error-handler");
 
 const { errors } = require("celebrate");
+
+const errorHandler = require("./middlewares/error-handler");
 
 const { requestLogger, errorLogger } = require("./middlewares/logger");
 
 app.use(requestLogger);
 
+const { ServerError } = require("./utils/errors");
+
 app.get("/crash-test", () => {
   setTimeout(() => {
-    throw new Error("Server will crash now");
+    throw new Error();
   }, 0);
 });
 
@@ -35,20 +36,13 @@ app.use(cors());
 //   })
 // );
 
-mongoose
-  .connect("mongodb://127.0.0.1:27017/wtwr_db")
-  .then(() => {
-    console.log("Connection to DB Successful!");
-  })
-  .catch(console.error);
+mongoose.connect("mongodb://127.0.0.1:27017/wtwr_db").catch(ServerError());
 
 app.use(express.json());
 
 app.use("/", mainRouter);
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+app.listen(PORT);
 
 app.use(errorLogger);
 

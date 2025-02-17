@@ -14,12 +14,12 @@ const ClothingItem = new mongoose.Schema({
     enum: ["hot", "warm", "cold"],
     required: true,
   },
-  link: {
+  imageUrl: {
     type: String,
     required: true,
     validate: {
       validator: (v) => validator.isURL(v),
-      message: "Link is not valid",
+      message: "The URL is not valid",
     },
   },
   owner: {
