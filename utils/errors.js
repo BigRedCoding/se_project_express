@@ -1,56 +1,33 @@
-class BadRequestError extends Error {
-  constructor(message) {
+class HttpError extends Error {
+  constructor(message, statusCode) {
     super(message);
-    this.statusCode = 400;
-    this.name = "BadRequestError";
+    this.statusCode = statusCode;
+    this.name = this.constructor.name;
+  }
+
+  static BadRequestError(message) {
+    return new HttpError(message, 400);
+  }
+
+  static UnauthorizedError(message) {
+    return new HttpError(message, 401);
+  }
+
+  static ForbiddenError(message) {
+    return new HttpError(message, 403);
+  }
+
+  static NotFoundError(message) {
+    return new HttpError(message, 404);
+  }
+
+  static ConflictError(message) {
+    return new HttpError(message, 409);
+  }
+
+  static ServerError(message) {
+    return new HttpError(message, 500);
   }
 }
 
-class UnauthorizedError extends Error {
-  constructor(message) {
-    super(message);
-    this.statusCode = 401;
-    this.name = "UnauthorizedError";
-  }
-}
-
-class ForbiddenError extends Error {
-  constructor(message) {
-    super(message);
-    this.statusCode = 403;
-    this.name = "ForbiddenError";
-  }
-}
-
-class NotFoundError extends Error {
-  constructor(message) {
-    super(message);
-    this.statusCode = 404;
-    this.name = "NotFoundError";
-  }
-}
-
-class ConflictError extends Error {
-  constructor(message) {
-    super(message);
-    this.statusCode = 409;
-    this.name = "ConflictError";
-  }
-}
-
-class ServerError extends Error {
-  constructor(message) {
-    super(message);
-    this.statusCode = 500;
-    this.name = "ServerError";
-  }
-}
-
-module.exports = {
-  BadRequestError,
-  UnauthorizedError,
-  ForbiddenError,
-  NotFoundError,
-  ConflictError,
-  ServerError,
-};
+module.exports = HttpError;

@@ -16,26 +16,19 @@ const errorHandler = require("./middlewares/error-handler");
 
 const { requestLogger, errorLogger } = require("./middlewares/logger");
 
-app.use(requestLogger);
-
 const { ServerError } = require("./utils/errors");
+
+const mainRouter = require("./routes/index");
+
+app.use(cors({ origin: "http://localhost:3000" }));
+
+app.use(requestLogger);
 
 app.get("/crash-test", () => {
   setTimeout(() => {
     throw new ServerError();
   }, 0);
 });
-
-const mainRouter = require("./routes/index");
-
-app.use(cors());
-
-// app.use(
-//   cors({
-//     origin: "https://www.bdwtwr.justlearning.net",
-//     methods: ["GET", "PUT", "POST", "PATCH", "DELETE"],
-//   })
-// );
 
 mongoose.connect("mongodb://127.0.0.1:27017/wtwr_db").catch(() => {
   throw new ServerError();

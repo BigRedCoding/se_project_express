@@ -6,56 +6,57 @@ const User = require("../models/user");
 
 const { JWT_SECRET } = require("../utils/config");
 
-const {
-  BadRequestError,
-  UnauthorizedError,
-  NotFoundError,
-  ConflictError,
-  ServerError,
-} = require("../utils/errors");
+const HttpError = require("../utils/errors");
 
 const createUser = (req, res, next) => {
-  const { name, avatar, email, password } = req.body;
+  const { name, password, email, avatar } = req.body;
 
   if (!email || !password) {
-    return next(new BadRequestError("Email and password are required"));
+    return next(HttpError.BadRequestError("Email and password are required"));
   }
 
-  return User.findOne({ email })
+  User.findOne({ email })
     .then((existingUser) => {
       if (existingUser) {
-        return next(new ConflictError("Email is already taken"));
+        return next(HttpError.ConflictError("Email is already taken"));
       }
 
       return new Promise((resolve, reject) => {
         bcrypt.hash(password, 8, (err, hashedPassword) => {
           if (err) {
-            return reject(new Error("Error hashing the password"));
+            return reject(HttpError.ServerError("Error hashing the password"));
           }
-          return resolve(hashedPassword);
+          resolve(hashedPassword);
         });
       })
         .then((hashedPassword) =>
           User.create({
             name,
-            avatar,
-            email,
             password: hashedPassword,
+            email,
+            avatar,
           })
         )
+        .then((newUser) => {
+          res
+            .status(201)
+            .json({ message: "User created successfully", user: newUser });
+        })
         .catch((createUserError) => {
           if (createUserError.name === "ValidationError") {
-            return next(new BadRequestError("Invalid data provided"));
+            return next(HttpError.BadRequestError("Invalid data provided"));
           }
 
           if (createUserError.name === "CastError") {
-            return next(new BadRequestError("Invalid ID"));
+            return next(HttpError.BadRequestError("Invalid ID"));
           }
 
-          return next(new ServerError("An error has occurred on the server"));
+          return next(
+            HttpError.ServerError("An error has occurred on the server")
+          );
         });
     })
-    .catch(next(new ServerError("Error processing the request")));
+    .catch(next);
 };
 
 const getCurrentUser = (req, res, next) => {
@@ -65,19 +66,19 @@ const getCurrentUser = (req, res, next) => {
     .orFail()
     .then((user) => {
       if (!user) {
-        return next(new NotFoundError("User not found"));
+        return next(HttpError.NotFoundError("User not found"));
       }
       return res.send(user);
     })
     .catch((err) => {
       if (err.name === "DocumentNotFoundError") {
-        return next(new NotFoundError("User not found"));
+        return next(HttpError.NotFoundError("User not found"));
       }
       if (err.name === "CastError") {
-        return next(new BadRequestError("User not found"));
+        return next(HttpError.BadRequestError("User not found"));
       }
 
-      return next(new ServerError("An error has occurred on the server"));
+      return next(HttpError.ServerError("An error has occurred on the server"));
     });
 };
 
@@ -85,7 +86,7 @@ const login = (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return next(new BadRequestError("Email and password are required"));
+    return next(HttpError.BadRequestError("Email and password are required"));
   }
 
   return User.findUserByCredentials(email, password)
@@ -105,9 +106,9 @@ const login = (req, res, next) => {
     })
     .catch((error) => {
       if (error.message === "Invalid credentials") {
-        return next(new UnauthorizedError("Invalid email or password"));
+        return next(HttpError.UnauthorizedError("Invalid email or password"));
       }
-      return next(new ServerError("An error has occurred on the server"));
+      return next(HttpError.ServerError("An error has occurred on the server"));
     });
 };
 
@@ -116,7 +117,9 @@ const updateUserProfile = (req, res, next) => {
 
   if (!name && !avatar) {
     return next(
-      new BadRequestError("At least one field (name or avatar) is required")
+      HttpError.BadRequestError(
+        "At least one field (name or avatar) is required"
+      )
     );
   }
 
@@ -128,15 +131,15 @@ const updateUserProfile = (req, res, next) => {
     .orFail()
     .then((user) => {
       if (!user) {
-        return next(new NotFoundError("User not found"));
+        return next(HttpError.NotFoundError("User not found"));
       }
       return res.status(200).send(user);
     })
     .catch((error) => {
       if (error.name === "ValidationError") {
-        return next(new BadRequestError("Invalid data provided"));
+        return next(HttpError.BadRequestError("Invalid data provided"));
       }
-      return next(new ServerError("An error has occurred on the server"));
+      return next(HttpError.ServerError("An error has occurred on the server"));
     });
 };
 
