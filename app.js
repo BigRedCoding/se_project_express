@@ -22,7 +22,7 @@ const mainRouter = require("./routes/index");
 
 const corsOptions = {
   origin: "https://www.bdwtwr.justlearning.net",
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTION"],
   credentials: true,
 };
 
