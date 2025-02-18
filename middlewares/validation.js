@@ -2,6 +2,10 @@ const { Joi, celebrate } = require("celebrate");
 const validator = require("validator");
 
 const urlCheck = (value, helpers) => {
+  if (value === undefined || value === null) {
+    value = "";
+  }
+
   if (value === "") {
     return value;
   }
