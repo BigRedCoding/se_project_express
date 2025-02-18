@@ -2,9 +2,14 @@ const { Joi, celebrate } = require("celebrate");
 const validator = require("validator");
 
 const urlCheck = (value, helpers) => {
+  if (value === "") {
+    return value;
+  }
+
   if (validator.isURL(value)) {
     return value;
   }
+
   return helpers.error("string.uri");
 };
 
