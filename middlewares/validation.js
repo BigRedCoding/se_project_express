@@ -40,7 +40,7 @@ const validateUserInfo = celebrate({
       "string.max": 'The "name" must be no longer than 30 characters',
       "string.empty": 'The "name" field must be filled in',
     }),
-    avatar: Joi.string().custom(urlCheck).allow("").optional().messages({
+    avatar: Joi.string().custom(urlCheck).allow("").required().messages({
       "string.uri": 'The "avatar" field must be a valid URL',
     }),
 
@@ -73,7 +73,7 @@ const validateUpdateUserInfo = celebrate({
       "string.max": 'The "name" must be no longer than 30 characters',
       "string.empty": 'The "name" field must be filled in',
     }),
-    avatar: Joi.string().optional().custom(urlCheck).messages({
+    avatar: Joi.string().allow("").required().custom(urlCheck).messages({
       "string.empty": 'The "avatar" field must be filled in',
       "string.uri": 'The "avatar" field must be a valid URL',
     }),

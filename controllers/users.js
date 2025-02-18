@@ -15,7 +15,7 @@ const createUser = (req, res, next) => {
     return next(HttpError.BadRequestError("Email and password are required"));
   }
 
-  User.findOne({ email })
+  return User.findOne({ email })
     .then((existingUser) => {
       if (existingUser) {
         return next(HttpError.ConflictError("Email is already taken"));
@@ -26,7 +26,7 @@ const createUser = (req, res, next) => {
           if (err) {
             return reject(HttpError.ServerError("Error hashing the password"));
           }
-          resolve(hashedPassword);
+          return resolve(hashedPassword);
         });
       })
         .then((hashedPassword) =>
@@ -115,20 +115,11 @@ const login = (req, res, next) => {
 const updateUserProfile = (req, res, next) => {
   const { name, avatar } = req.body;
 
-  if (!name && !avatar) {
-    return next(
-      HttpError.BadRequestError(
-        "At least one field (name or avatar) is required"
-      )
-    );
-  }
-
   return User.findByIdAndUpdate(
     req.user._id,
     { name, avatar },
     { new: true, runValidators: true }
   )
-    .orFail()
     .then((user) => {
       if (!user) {
         return next(HttpError.NotFoundError("User not found"));
