@@ -20,7 +20,7 @@ const { ServerError } = require("./utils/errors");
 
 const mainRouter = require("./routes/index");
 
-app.use(cors({ origin: "http://localhost:3000" }));
+app.use(cors());
 
 app.use(requestLogger);
 
