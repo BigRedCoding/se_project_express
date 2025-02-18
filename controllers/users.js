@@ -37,10 +37,8 @@ const createUser = (req, res, next) => {
             avatar,
           })
         )
-        .then((newUser) => {
-          res
-            .status(201)
-            .json({ message: "User created successfully", user: newUser });
+        .then(() => {
+          res.status(201).json({ message: "User created successfully" });
         })
         .catch((createUserError) => {
           if (createUserError.name === "ValidationError") {

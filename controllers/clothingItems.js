@@ -66,7 +66,7 @@ const likeItem = (req, res, next) => {
       res.status(200).send({ data: item });
     })
     .catch((err) => {
-      if (err.message === "DocumentNotFoundError") {
+      if (err.name === "DocumentNotFoundError") {
         return next(HttpError.NotFoundError());
       }
       if (err.name === "CastError") {
@@ -87,7 +87,7 @@ const dislikeItem = (req, res, next) => {
       res.status(200).send(item);
     })
     .catch((err) => {
-      if (err.message === "DocumentNotFoundError") {
+      if (err.name === "DocumentNotFoundError") {
         return next(HttpError.NotFoundError());
       }
       if (err.name === "CastError") {
