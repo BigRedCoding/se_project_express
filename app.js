@@ -21,10 +21,7 @@ const { ServerError } = require("./utils/errors");
 const mainRouter = require("./routes/index");
 
 const corsOptions = {
-  origin:
-    process.env.NODE_ENV === "production"
-      ? "https://api.bdwtwr.justlearning.net"
-      : "http://localhost:3000",
+  origin: "https://api.bdwtwr.justlearning.net",
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTION"],
   credentials: true,
 };
