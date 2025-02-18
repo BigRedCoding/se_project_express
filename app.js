@@ -6,7 +6,7 @@ process.env = require("dotenv").config();
 
 const mongoose = require("mongoose");
 
-// const { PORT = 3001 } = process.env;
+const { PORT = 3001 } = process.env;
 
 const app = express();
 
@@ -20,7 +20,13 @@ const { ServerError } = require("./utils/errors");
 
 const mainRouter = require("./routes/index");
 
-app.use(cors());
+const corsOptions = {
+  origin: "https://www.bdwtwr.justlearning.net",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 app.use(requestLogger);
 
