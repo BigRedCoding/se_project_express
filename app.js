@@ -41,24 +41,19 @@ app.use(requestLogger);
 
 app.get("/crash-test", () => {
   setTimeout(() => {
-    throw new ServerError();
+    throw new HttpError.ServerError("An error has occurred on the server");
   }, 0);
 });
 
 mongoose.connect("mongodb://127.0.0.1:27017/wtwr_db").catch(() => {
-  throw new ServerError();
+  throw new HttpError.ServerError("An error has occurred on the server");
 });
 
 app.use(express.json());
 
 app.use("/", mainRouter);
 
-app.use((err, req, res, next) => {
-  if (err.name === "DocumentNotFoundError") {
-    return next(HttpError.NotFoundError("Item not found"));
-  }
-  next(err);
-});
+app.use((req, res, next) => next(HttpError.NotFoundError("Page not found")));
 
 app.listen(PORT);
 
