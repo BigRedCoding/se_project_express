@@ -67,7 +67,7 @@ const likeItem = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === "DocumentNotFoundError") {
-        return next(HttpError.NotFoundError());
+        return next(HttpError.NotFoundError("Item not found"));
       }
       if (err.name === "CastError") {
         return next(HttpError.BadRequestError("Invalid item ID"));
@@ -88,7 +88,7 @@ const dislikeItem = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === "DocumentNotFoundError") {
-        return next(HttpError.NotFoundError());
+        return next(HttpError.NotFoundError("Item not found"));
       }
       if (err.name === "CastError") {
         return next(HttpError.BadRequestError("Invalid item ID"));

@@ -16,7 +16,7 @@ const errorHandler = require("./middlewares/error-handler");
 
 const { requestLogger, errorLogger } = require("./middlewares/logger");
 
-const { ServerError } = require("./utils/errors");
+const HttpError = require("./utils/errors");
 
 const mainRouter = require("./routes/index");
 
@@ -53,10 +53,11 @@ app.use(express.json());
 
 app.use("/", mainRouter);
 
-app.use((req, res, next) => {
-  res.status(404).json({
-    error: "Route not found",
-  });
+app.use((err, req, res, next) => {
+  if (err.name === "DocumentNotFoundError") {
+    return next(HttpError.NotFoundError("Item not found"));
+  }
+  next(err);
 });
 
 app.listen(PORT);
